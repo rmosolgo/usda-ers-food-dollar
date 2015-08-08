@@ -51,16 +51,19 @@ class FoodDollarTable
     @entries << entry
   end
 
-  # Stringify for rendering with D3
+  # Serialize for rendering with D3
   def as_hash
     {
       name: name,
-      years: @years.map do |year|
-        @categories.map do |category|
+      categories: @categories.map do |category|
+        next if category == "Total"
+        @years.map do |year|
+          hash = {x: year, category: category}
           entry = @entries.find {|entry| entry.year == year && entry.category == category}
-          entry && entry.value
+          hash[:y] = entry ? entry.value : 0
+          hash
         end
-      end
+      end.compact
     }
   end
 end
@@ -94,9 +97,10 @@ TABLES = tables.each_with_object({}) do |t, memo|
 end
 
 # Then get all the entries
-entries_url = EndpointURL.new("Real").to_s
-entries_request = DataRequest.new(entries_url, size: 5, start: 0)
+entries_url = EndpointURL.new("Nominal").to_s
+entries_request = DataRequest.new(entries_url, size: 2000, start: 0)
 entries = entries_request.result["dataTable"]
+File.write("entries.json", JSON.pretty_generate(entries))
 entries.each do |entry|
   entry_obj = FoodDollarEntry.new(
     year: entry["year"],
