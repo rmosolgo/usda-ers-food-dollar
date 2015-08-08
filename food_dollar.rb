@@ -82,7 +82,7 @@ class FoodDollarTable
           hash[:y] = if entry
               entry.value
             else
-              # puts "No entry for #{name}/#{year}/#{category}"
+              hash[:missing] = true
               0
             end
           hash

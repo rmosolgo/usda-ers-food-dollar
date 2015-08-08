@@ -14,3 +14,9 @@ See it on github pages: http://rmosolgo.github.io/usda-ers-food-dollar/
 - Pull data from the API with `ruby food_dollar.rb {API_KEY}`
 - Write data into `food_dollar.json`
 - Render charts with `index.html` + `food_dollar.js`
+
+## To do
+
+- Handle missing values
+  - Right now they're `0` but that causes the graph to be equally split
+  - seems like some tables only have data for certain years
