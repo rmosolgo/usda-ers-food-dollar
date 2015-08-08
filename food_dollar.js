@@ -1,5 +1,6 @@
 var FoodDollar = {
   render: function(data) {
+    FoodDollar.data = data
     var container = document.getElementById("food-dollar")
     data.forEach(function(table) {
       var tableContainer = prepareContainer(table)
@@ -64,7 +65,6 @@ function renderChartIntoContainer(table, container) {
     .offset("expand")
 
   var layers = stack(table.categories)
-  console.log(table.name, layers)
 
   var svg = d3.select(container).append("svg")
       .attr("width", FoodDollar.width)
@@ -73,7 +73,7 @@ function renderChartIntoContainer(table, container) {
   svg.selectAll("path")
       .data(layers)
     .enter().append("path")
-      .attr("d", function(d) { console.log(d); return FoodDollar.area(d) } )
+      .attr("d", function(d) { return FoodDollar.area(d) } )
       .style("fill", function() { return FoodDollar.color(Math.random()); })
     .append("title")
       .text(function(d) { return d[0].category + " [" + d.map(function(i) { return "" + i.x + ": " + Math.round(i.y * 100) / 100 }).join(", ") + "]" });
