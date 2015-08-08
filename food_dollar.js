@@ -54,7 +54,12 @@ function prepareContainer(table) {
   anchor.id = table.name
   anchor.href = "#" + table.name
   var header = document.createElement("h2")
-  header.innerText = table.name
+
+  var anyMissingData = table.categories.some(function(cat) {
+    return cat.some(function(d) { return d.missing })
+  })
+  header.innerText = table.name + (anyMissingData ? " (some missing data)" : "")
+
   anchor.appendChild(header)
   container.appendChild(anchor)
   return container
