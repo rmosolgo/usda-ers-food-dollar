@@ -49,9 +49,13 @@ FoodDollar.xAxis = d3.svg.axis()
 
 function prepareContainer(table) {
   var container = document.createElement("div")
+  var anchor = document.createElement("a")
+  anchor.id = table.name
+  anchor.href = "#" + table.name
   var header = document.createElement("h2")
   header.innerText = table.name
-  container.appendChild(header)
+  anchor.appendChild(header)
+  container.appendChild(anchor)
   return container
 }
 
