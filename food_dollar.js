@@ -3,6 +3,9 @@ var FoodDollar = {
     FoodDollar.data = data
     var container = document.getElementById("food-dollar")
     data.forEach(function(table) {
+      table.anyMissingData = table.categories.some(function(cat) {
+        return cat.some(function(d) { return d.missing })
+      })
       var tableContainer = prepareContainer(table)
       renderChartIntoContainer(table, tableContainer)
       container.appendChild(tableContainer)
@@ -26,9 +29,9 @@ var FoodDollar = {
     )
     .range(
       [
-        "#f00", "#f90", "#ff0", "#ff9",
-        "#0f0", "#0f9", "#0ff", "#9ff",
-        "#00f", "#09f", "#f0f", "#f9f",
+        "#f00", "#f90", "#ff0", "#ffc",
+        "#0f0", "#0f9", "#0ff", "#cff",
+        "#00f", "#09f", "#f0f", "#fcf",
       ]
     ),
 
@@ -39,8 +42,8 @@ FoodDollar.xScale = d3.scale.linear()
   .range([0, FoodDollar.width]);
 
 FoodDollar.yScale = d3.scale.linear()
-  .domain([0, 1])
-  .range([0, FoodDollar.height - 30]);
+  .domain([0, 100])
+  .range([0, FoodDollar.height - 60]);
 
 FoodDollar.xAxis = d3.svg.axis()
     .scale(FoodDollar.xScale)
@@ -54,11 +57,7 @@ function prepareContainer(table) {
   anchor.id = table.name
   anchor.href = "#" + table.name
   var header = document.createElement("h2")
-
-  var anyMissingData = table.categories.some(function(cat) {
-    return cat.some(function(d) { return d.missing })
-  })
-  header.innerText = table.name + (anyMissingData ? " (some missing data)" : "")
+  header.innerText = table.name + (table.anyMissingData ? " (some missing data)" : "")
 
   anchor.appendChild(header)
   container.appendChild(anchor)
@@ -67,7 +66,7 @@ function prepareContainer(table) {
 
 function renderChartIntoContainer(table, container) {
   var stack = d3.layout.stack()
-    .offset("expand")
+    .offset(table.anyMissingData ? "zero" : "wiggle") // wiggle doesn't work with missing spots
 
   var layers = stack(table.categories)
 
